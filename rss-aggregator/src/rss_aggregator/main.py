@@ -11,7 +11,7 @@ app = FastAPI(
     }
 )
 
-def start():
+def start() -> None:
     uvicorn.run("rss_aggregator.main:app", host="0.0.0.0", port=8080, reload=True)
 
 # Include modular routes
