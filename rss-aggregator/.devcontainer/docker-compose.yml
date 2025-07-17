@@ -6,12 +6,15 @@ services:
     volumes:
       - ..:/workspace:cached
     command: sleep infinity
+    ports:
+      - "8000:8000"
     depends_on:
       - db
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/rss
     networks:
       - rssnet
+    restart: always
 
   db:
     image: pgvector/pgvector:pg17
@@ -29,6 +32,7 @@ services:
 
 networks:
   rssnet:
+
 
 volumes:
   pgdata:
