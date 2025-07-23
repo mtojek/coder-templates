@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from rss_aggregator.api import articles_router
 import uvicorn
 
 app = FastAPI(
@@ -14,6 +15,4 @@ app = FastAPI(
 def start() -> None:
     uvicorn.run("rss_aggregator.main:app", host="0.0.0.0", port=8080, reload=True)
 
-# Include modular routes
-# app.include_router(health.router)
-# app.include_router(search.router)
+app.include_router(articles_router, prefix="/api/v1")
