@@ -1,6 +1,14 @@
+from contextlib import asynccontextmanager
+from typing import Any, AsyncGenerator, Generator
 from fastapi import FastAPI
 from rss_aggregator.api import articles_router
+from rss_aggregator.db import init_db
 import uvicorn
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[Any, Any]:
+    init_db()  # create tables before app starts
+    yield
 
 app = FastAPI(
     title="RSS Aggregator API",
@@ -9,7 +17,8 @@ app = FastAPI(
     license_info={
         "name": "MIT",
         "url": "https://opensource.org/licenses/MIT",
-    }
+    },
+    lifespan=lifespan,
 )
 
 def start() -> None:
