@@ -1,3 +1,24 @@
 database:
   url: postgresql+psycopg://app_user:app_pass@db:5432/rss
   echo: true
+
+feeds:
+  - feed_id: "reuters_financial"
+    name: "Reuters Financial"
+    url: "https://ir.thomsonreuters.com/rss/news-releases.xml"
+
+  - feed_id: "cnn_top"
+    name: "CNN Top Stories"
+    url: "http://rss.cnn.com/rss/edition.rss"
+
+  - feed_id: "bbc_world"
+    name: "BBC World News"
+    url: "http://feeds.bbci.co.uk/news/world/rss.xml"
+
+  - feed_id: "verge_tech"
+    name: "The Verge - Tech"
+    url: "https://www.theverge.com/rss/index.xml"
+
+  - feed_id: "wired"
+    name: "WIRED"
+    url: "https://www.wired.com/feed/rss"

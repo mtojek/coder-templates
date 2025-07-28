@@ -13,7 +13,8 @@ dependencies = [
     "sqlalchemy (>=2.0.41,<3.0.0)",
     "psycopg[binary] (>=3.2.9,<4.0.0)",
     "pgvector (>=0.4.1,<0.5.0)",
-    "pydantic-settings (>=2.10.1,<3.0.0)"
+    "pydantic-settings (>=2.10.1,<3.0.0)",
+    "feedparser (>=6.0.11,<7.0.0)"
 ]
 
 [build-system]
@@ -22,3 +23,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 start = "rss_aggregator.main:start"
+scrape = "rss_aggregator.scrape:scrape"

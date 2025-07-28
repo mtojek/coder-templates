@@ -8,9 +8,14 @@ class DatabaseSettings(BaseModel):
     url: str
     echo: bool = False
 
+class FeedSource(BaseModel):
+    feed_id: str
+    name: str
+    url: str
 
 class Settings(BaseSettings):
     database: DatabaseSettings
+    feeds: list[FeedSource]
 
     model_config = SettingsConfigDict(env_prefix="", extra="ignore")
 

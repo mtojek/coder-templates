@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Generator
+from typing import Any, AsyncGenerator
 from fastapi import FastAPI
 from rss_aggregator.api import articles_router
 from rss_aggregator.db import init_db
