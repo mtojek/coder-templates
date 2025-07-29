@@ -22,6 +22,7 @@ def scrape() -> None:
     for feed in settings.feeds:
         logger.info(f"Fetching feed: {feed.name} ({feed.feed_id})")
 
+        # TODO Find last time when published article
         # TODO: client/server error
         # TODO: async workflow
         parsed = feedparser.parse(feed.url)
@@ -31,7 +32,7 @@ def scrape() -> None:
 
             # TODO check last published at
 
-            article = attach_transformers(article)
+            article = attach_embeddings(article)
             return
 
             # TODO db add & commit
@@ -41,11 +42,11 @@ def transform_parsed(feed_id: str, parsed : feedparser.FeedParserDict) -> Articl
         feed_id=feed_id,
         title=html.unescape(parsed.title), # type: ignore
         summary=html.unescape(parsed.summary), # type: ignore
-        link=parsed.link, # type: ignore
+        link=parsed.link,
         published_at=transform_datetime(parsed.published_parsed), # type: ignore
     )
 
-def attach_transformers(article: Article) -> Article:
+def attach_embeddings(article: Article) -> Article:
     transformer_input : str = f"{article.title}. {article.summary}"
     keywords = keyword_extractor.extract_keywords(transformer_input, top_n=5)
     hashtags = [kw[0] for kw in keywords]
