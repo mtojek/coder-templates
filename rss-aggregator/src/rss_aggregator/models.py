@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ARRAY
-from sqlalchemy.orm import declarative_base
+from typing import List
+from sqlalchemy import Column, Float, Integer, String, Text, TIMESTAMP
+from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import declarative_base, Mapped, mapped_column
 
 Base = declarative_base()
 
@@ -12,4 +14,5 @@ class Article(Base):
     summary = Column(Text)
     link = Column(Text)
     published_at = Column(TIMESTAMP)
-    hashtags = Column(ARRAY(String), nullable=False, default=[])
+    hashtags: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=False)
+    embeddings: Mapped[List[float]] = mapped_column(ARRAY(Float), nullable=False)

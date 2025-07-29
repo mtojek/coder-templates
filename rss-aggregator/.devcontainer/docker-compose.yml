@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ..:/workspace:cached
+      - transformers:/var/transformers:cached
     command: sleep infinity
     ports:
       - "8000:8000"
@@ -12,6 +13,7 @@ services:
       - db
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/rss
+      - SENTENCE_TRANSFORMERS_HOME=/var/transformers
     networks:
       - rssnet
     restart: always
@@ -33,6 +35,6 @@ services:
 networks:
   rssnet:
 
-
 volumes:
+  transformers:
   pgdata:
