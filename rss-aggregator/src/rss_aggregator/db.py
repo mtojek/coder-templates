@@ -16,3 +16,8 @@ def get_db() -> Generator[Session, None, None]:
 
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
+
+def drop_db() -> None:
+    print(f"Dropping all tables for database: {settings.database.url}")
+    Base.metadata.drop_all(bind=engine)
+    print("All tables dropped")

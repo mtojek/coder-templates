@@ -7,7 +7,9 @@ import time
 import logging
 
 import feedparser
+from sqlalchemy import select, func
 
+from rss_aggregator.db import SessionLocal, Session
 from rss_aggregator.config import settings
 from rss_aggregator.logger import setup_logging
 from rss_aggregator.models import Article
@@ -22,20 +24,30 @@ def scrape() -> None:
     for feed in settings.feeds:
         logger.info(f"Fetching feed: {feed.name} ({feed.feed_id})")
 
-        # TODO Find last time when published article
-        # TODO: client/server error
-        # TODO: async workflow
-        parsed = feedparser.parse(feed.url)
-        for entry in parsed.entries:
-            article = transform_parsed(feed.feed_id, entry)
-            logger.info(f"Found link: {article.link} (published at: {article.published_at})")
+        with SessionLocal() as db:
+            last_published_at = get_last_published_at(db, feed.feed_id)
+            if last_published_at != None:
+                logger.info(f"Last published article at: {last_published_at}")
 
-            # TODO check last published at
+            # TODO: async workflow
+            # FIXME: client/server error
+            parsed = feedparser.parse(feed.url)
+            for entry in parsed.entries:
+                article = transform_parsed(feed.feed_id, entry)
+                logger.info(f"Found link: {article.link} (published at: {article.published_at})")
 
-            article = attach_embeddings(article)
-            return
+                logger.info(f"article.published_at = {article.published_at} , last_published_at = {last_published_at}")
+                if last_published_at and article.published_at <= last_published_at:
+                    logger.info("Article already archieved")
+                    continue
+                else:
+                    logger.info("Article not archieved yet")
 
-            # TODO db add & commit
+                article = attach_embeddings(article)
+                db.add(article)
+                logger.info("Article archieved")
+
+            db.commit()
 
 def transform_parsed(feed_id: str, parsed : feedparser.FeedParserDict) -> Article:
     return Article(
@@ -57,3 +69,11 @@ def attach_embeddings(article: Article) -> Article:
 
 def transform_datetime(struct_time: time.struct_time) -> datetime:
     return datetime.fromtimestamp(calendar.timegm(struct_time), tz=UTC)
+
+def get_last_published_at(db: Session, feed_id: str) -> datetime | None:
+    stmt = (
+        select(func.max(Article.published_at))
+        .where(Article.feed_id == feed_id)
+    )
+    result = db.execute(stmt).scalar_one_or_none()
+    return result

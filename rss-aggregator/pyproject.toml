@@ -26,3 +26,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 start = "rss_aggregator.main:start"
 scrape = "rss_aggregator.scrape:scrape"
+drop_db = "rss_aggregator.db:drop_db"
